@@ -11,7 +11,7 @@ using SneakerCheck.WebApi.Data;
 namespace SneakerCheck.WebApi.Migrations
 {
     [DbContext(typeof(SneakerCheckDbContext))]
-    [Migration("20231225001636_Init")]
+    [Migration("20231225163404_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -128,8 +128,7 @@ namespace SneakerCheck.WebApi.Migrations
                     b.Property<double>("Rate")
                         .HasColumnType("REAL");
 
-                    b.Property<string>("SellerId")
-                        .IsRequired()
+                    b.Property<Guid>("SellerId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -142,9 +141,29 @@ namespace SneakerCheck.WebApi.Migrations
                     b.ToTable("Shops");
                 });
 
+            modelBuilder.Entity("SneakerCheck.WebApi.Models.ShopUrl", b =>
+                {
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("ShopId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Name");
+
+                    b.HasIndex("ShopId");
+
+                    b.ToTable("ShopUrl");
+                });
+
             modelBuilder.Entity("SneakerCheck.WebApi.Models.UserModel", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("GoogleId")
@@ -238,32 +257,17 @@ namespace SneakerCheck.WebApi.Migrations
                         .HasForeignKey("SellerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
 
-                    b.OwnsMany("SneakerCheck.WebApi.Models.ShopUrl", "ShopUrls", b1 =>
-                        {
-                            b1.Property<Guid>("ShopId")
-                                .HasColumnType("TEXT");
+            modelBuilder.Entity("SneakerCheck.WebApi.Models.ShopUrl", b =>
+                {
+                    b.HasOne("SneakerCheck.WebApi.Models.Shop", null)
+                        .WithMany("ShopUrls")
+                        .HasForeignKey("ShopId");
+                });
 
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("INTEGER");
-
-                            b1.Property<string>("Name")
-                                .IsRequired()
-                                .HasColumnType("TEXT");
-
-                            b1.Property<string>("Url")
-                                .IsRequired()
-                                .HasColumnType("TEXT");
-
-                            b1.HasKey("ShopId", "Id");
-
-                            b1.ToTable("ShopUrl");
-
-                            b1.WithOwner()
-                                .HasForeignKey("ShopId");
-                        });
-
+            modelBuilder.Entity("SneakerCheck.WebApi.Models.Shop", b =>
+                {
                     b.Navigation("ShopUrls");
                 });
 #pragma warning restore 612, 618

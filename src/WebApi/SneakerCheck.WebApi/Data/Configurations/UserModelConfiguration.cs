@@ -11,7 +11,7 @@ public class UserModelConfiguration : IEntityTypeConfiguration<UserModel>
     {
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.Id).ValueGeneratedNever();
+        builder.Property(x => x.Id).ValueGeneratedOnAdd();
         builder.Property(x => x.GoogleId).IsRequired();
         builder.Property(x => x.Name).IsRequired();
         builder.Property(x => x.Role).IsRequired();

@@ -28,10 +28,7 @@ public class ShopConfiguration : IEntityTypeConfiguration<Shop>
             .HasForeignKey(x => x.SellerId)
             .IsRequired();
 
-        builder.OwnsMany(x => x.ShopUrls, b =>
-        {
-            b.Property(x => x.Name).IsRequired();
-            b.Property(x => x.Url).IsRequired();
-        });
+        builder.HasMany(x => x.ShopUrls)
+            .WithOne();
     }
 }

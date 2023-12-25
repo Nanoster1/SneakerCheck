@@ -17,7 +17,7 @@ public class JwtProvider : IJwtProvider
         var currentTime = DateTime.UtcNow;
         var claims = new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier, user.Id),
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new(ClaimTypes.Name, user.Name),
             new(ClaimTypes.Role, user.Role.ToString())
         };

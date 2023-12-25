@@ -15,8 +15,8 @@ public abstract class ApiController : ControllerBase
     {
         var claims = User.Claims;
         return new User(
-            claims.First(cl => cl.ValueType == ClaimTypes.NameIdentifier).Value,
+            claims.First(cl => cl.Type == ClaimTypes.NameIdentifier).Value,
             User.Identity?.Name ?? throw new NullReferenceException(nameof(User.Identity)),
-            claims.First(cl => cl.ValueType == ClaimTypes.Role).Value);
+            claims.First(cl => cl.Type == ClaimTypes.Role).Value);
     }
 }

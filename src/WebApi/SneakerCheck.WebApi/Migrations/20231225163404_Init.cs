@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -27,7 +28,7 @@ namespace SneakerCheck.WebApi.Migrations
                 name: "UserModels",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     GoogleId = table.Column<string>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Role = table.Column<int>(type: "INTEGER", nullable: false)
@@ -61,7 +62,7 @@ namespace SneakerCheck.WebApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    SellerId = table.Column<string>(type: "TEXT", nullable: false),
+                    SellerId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     City = table.Column<string>(type: "TEXT", nullable: false),
                     Address = table.Column<string>(type: "TEXT", nullable: false),
@@ -126,20 +127,18 @@ namespace SneakerCheck.WebApi.Migrations
                 name: "ShopUrl",
                 columns: table => new
                 {
-                    ShopId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Id = table.Column<int>(type: "INTEGER", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Url = table.Column<string>(type: "TEXT", nullable: false)
+                    Url = table.Column<string>(type: "TEXT", nullable: false),
+                    ShopId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ShopUrl", x => new { x.ShopId, x.Id });
+                    table.PrimaryKey("PK_ShopUrl", x => x.Name);
                     table.ForeignKey(
                         name: "FK_ShopUrl_Shops_ShopId",
                         column: x => x.ShopId,
                         principalTable: "Shops",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -184,6 +183,11 @@ namespace SneakerCheck.WebApi.Migrations
                 table: "Products",
                 column: "ImageId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShopUrl_ShopId",
+                table: "ShopUrl",
+                column: "ShopId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Shops_IconId",

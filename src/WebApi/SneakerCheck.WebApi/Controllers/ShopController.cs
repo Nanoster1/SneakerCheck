@@ -14,25 +14,22 @@ public class ShopController(SneakerCheckDbContext context) : ApiController
     private readonly SneakerCheckDbContext _context = context;
 
     [HttpPost]
-    [AllowAnonymous]
     public async Task<ActionResult> Create([FromBody] ShopCreateDto dto, CancellationToken cancellationToken)
     {
         var user = GetUser();
 
         var icon = new ImageModel
         {
-            Id = default,
             Bytes = dto.Icon.Bytes,
             Format = dto.Icon.Format
         };
 
-        _context.Add(icon);
+        _context.ImageModels.Add(icon);
         await _context.SaveChangesAsync(cancellationToken);
 
         var shop = new Shop
         {
-            Id = Guid.NewGuid(),
-            SellerId = user.Id,
+            SellerId = Guid.Parse(user.Id),
             Name = dto.Name,
             City = dto.City,
             Address = dto.Address,
@@ -41,6 +38,9 @@ public class ShopController(SneakerCheckDbContext context) : ApiController
             ShopUrls = dto.ShopUrls,
             Rate = 0
         };
+
+        _context.Shops.Add(shop);
+        await _context.SaveChangesAsync(cancellationToken);
 
         return Ok(shop);
     }

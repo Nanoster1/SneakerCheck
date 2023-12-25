@@ -1,3 +1,7 @@
 namespace SneakerCheck.WebApi.Models;
 
-public record ShopUrl(string Name, string Url);
+public class ShopUrl
+{
+    public required string Name { get; set; }
+    public required string Url { get; set; }
+}
