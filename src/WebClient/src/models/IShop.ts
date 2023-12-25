@@ -1,32 +1,18 @@
-import SocialNameEnum from './SocialNameEnum'
-
-export interface Address {
-  id?: string
-  country: string
-  city: string
-  street: string
-  house: string
-  region: string
-  regionNumber: string
-}
-
-export interface ShopRating {
-  id?: string
-  value: string
-}
-
 export interface Social {
-  id?: string
   url: string
-  name: SocialNameEnum
+  name: string
 }
 
 export default interface IShop {
   id?: string
   name: string
-  address: Address
+  city: string
+  address: string
   description: string
-  imageLink: string
-  socials: Social[]
-  shopRating: ShopRating
+  icon: {
+    bytes: string,
+    format: string
+  },
+  shopUrls: Social[]
+  rating?: number
 }

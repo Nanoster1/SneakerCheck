@@ -1,7 +1,9 @@
 import axios from 'axios'
 
 export const serverUrl = ''
-export const workingLocalServerUrl = 'http://192.168.126.193:80'
+export const workingLocalServerUrl = 'http://localhost:5000/'
+
+const token = localStorage.getItem('token')
 
 const apiClient = axios.create({
   baseURL: serverUrl,
@@ -10,7 +12,10 @@ const apiClient = axios.create({
 
 export const workingApiClient = axios.create({
   baseURL: workingLocalServerUrl,
-  responseType: 'json'
+  responseType: 'json',
+  headers: {
+    Authorization: `Bearer ${token}`
+  }
 })
 
 export default apiClient

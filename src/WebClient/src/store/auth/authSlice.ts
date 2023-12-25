@@ -9,9 +9,10 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    login: (state, action: PayloadAction<{ token: string }>) => {
+    login: (state, action: PayloadAction<{ jwtToken: string }>) => {
       state.isLoggedIn = true
-      state.token = action.payload.token
+      localStorage.setItem('token', action.payload?.jwtToken?.toString());
+      state.token = action.payload.jwtToken
     },
     logout: (state) => {
       state.isLoggedIn = false

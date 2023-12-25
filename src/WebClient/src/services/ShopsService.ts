@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios'
 import IShop from '../models/IShop'
-import apiClient, { workingApiClient } from './client'
+import { workingApiClient } from './client'
 
 export async function getShops(): Promise<AxiosResponse<IShop[]>> {
   return workingApiClient.get<IShop[]>('/Shop/getList/10')
@@ -11,7 +11,7 @@ export async function getShop(id: string): Promise<AxiosResponse<IShop>> {
 }
 
 export async function createShop(shop: IShop): Promise<AxiosResponse<IShop[]>> {
-  return workingApiClient.post<number>('/Shop/create', shop)
+  return workingApiClient.post<number>('/shop', shop)
 }
 
 export async function updateShop(id: string, shop: IShop): Promise<AxiosResponse<IShop[]>> {

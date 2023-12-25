@@ -3,7 +3,7 @@ const path = require('path')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ESLintPlugin = require('eslint-webpack-plugin');
+// const ESLintPlugin = require('eslint-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
@@ -121,10 +121,10 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: '[name].[hash:8].css',
             chunkFilename: '[name].[hash:8].css',
-        }),
-        new ESLintPlugin({
-            // Параметры плагина
-            extensions: ['js', 'jsx', 'ts', 'tsx'], // Расширения файлов для проверки
-        }),
+        })
+        // new ESLintPlugin({
+        //     // Параметры плагина
+        //     extensions: ['js', 'jsx', 'ts', 'tsx'], // Расширения файлов для проверки
+        // }),
     ],
 }

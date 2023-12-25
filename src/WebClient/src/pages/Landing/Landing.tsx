@@ -33,7 +33,7 @@ const Landing = () => {
       </Flex>
       <Flex span={15} gap={25} justify={'center'} style={{ marginTop: '5vh' }}>
         <Button onClick={() => navigation(RouteNames.SHOPS)} size={'large'} type="primary" icon={<SearchOutlined />}>
-          Посмотреть Посмотреть Посмотреть магазины
+          Посмотреть магазины
         </Button>
         <Button
           onClick={() => navigation(RouteNames.SHOPS_CREATE_EDIT)}
