@@ -2,7 +2,7 @@ namespace SneakerCheck.WebApi.Models;
 
 public class Instruction
 {
-    public required Guid Id { get; set; }
+    public Guid Id { get; set; } = default;
     public required Category Category { get; set; }
     public required Guid ShopId { get; set; }
     public required Guid ProductId { get; set; }

@@ -30,7 +30,7 @@ public class JwtProvider : IJwtProvider
                 notBefore: currentTime,
                 claims: identity.Claims,
                 expires: currentTime.Add(TimeSpan.FromMinutes(10)),
-                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes("mysupersecret_secretkey!123")), SecurityAlgorithms.HmacSha256));
+                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes("mysupersecret_secretkey!123asdasdasdasd")), SecurityAlgorithms.HmacSha256));
 
         return new JwtSecurityTokenHandler().WriteToken(jwt);
     }

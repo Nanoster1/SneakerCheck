@@ -1,4 +1,7 @@
+using System.IdentityModel.Tokens.Jwt;
+
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace SneakerCheck.WebApi.Authentication.Schemes;
 
@@ -12,17 +15,22 @@ public static class GoogleJwtScheme
         {
             options.TokenValidationParameters = new()
             {
-                ValidateActor = false,
-                ValidateAudience = false,
-                ValidateIssuer = false,
                 ValidateIssuerSigningKey = false,
+                ValidateIssuer = false,
+                ValidateAudience = false,
                 ValidateLifetime = false,
-                ValidateSignatureLast = false,
-                ValidateTokenReplay = false,
-                ValidateWithLKG = false
+                SignatureValidator = (token, parameters) =>
+                {
+                    var handler = new JsonWebTokenHandler();
+                    var jwt = handler.ReadToken(token);
+                    return jwt;
+                },
+                RequireExpirationTime = false,
+                RequireSignedTokens = false,
+                NameClaimType = System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Name
             };
         });
-        
+
         return builder;
     }
 }

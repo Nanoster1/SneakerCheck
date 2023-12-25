@@ -25,8 +25,8 @@ public class AuthenticationController(SneakerCheckDbContext context, IJwtProvide
     [Authorize(AuthenticationSchemes = GoogleJwtScheme.SchemeName)]
     public async Task<ActionResult<string>> GoogleGetToken(CancellationToken cancellationToken)
     {
-        var googleId = User.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
-        var googleName = User.Claims.First(x => x.Type == JwtRegisteredClaimNames.Name)?.Value;
+        var googleId = User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+        var googleName = User.Identity?.Name;
 
         var handler = new JwtSecurityTokenHandler();
 
@@ -36,7 +36,6 @@ public class AuthenticationController(SneakerCheckDbContext context, IJwtProvide
         {
             user = new UserModel
             {
-                Id = default!,
                 Name = googleName!,
                 GoogleId = googleId!,
                 Role = UserRole.Customer
