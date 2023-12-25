@@ -10,16 +10,16 @@ public record ShopCreateDto(
     ImageCreateDto Icon,
     List<ShopUrl> ShopUrls)
 {
-    public static Shop ToModel(ShopCreateDto dto, Guid iconId, Guid sellerId)
+    public Shop ToModel(Guid iconId, Guid sellerId)
     {
         return new Shop
         {
-            Name = dto.Name,
-            City = dto.City,
-            Address = dto.Address,
-            Description = dto.Description,
+            Name = Name,
+            City = City,
+            Address = Address,
+            Description = Description,
             IconId = iconId,
-            ShopUrls = dto.ShopUrls,
+            ShopUrls = ShopUrls,
             Rate = 0,
             SellerId = sellerId
         };

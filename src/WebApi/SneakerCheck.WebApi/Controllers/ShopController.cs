@@ -32,17 +32,7 @@ public class ShopController(SneakerCheckDbContext context) : ApiController
         _context.ImageModels.Add(icon);
         await _context.SaveChangesAsync(cancellationToken);
 
-        var shop = new Shop
-        {
-            SellerId = Guid.Parse(user.Id),
-            Name = dto.Name,
-            City = dto.City,
-            Address = dto.Address,
-            Description = dto.Description,
-            IconId = icon.Id,
-            ShopUrls = dto.ShopUrls,
-            Rate = 0
-        };
+        var shop = dto.ToModel(icon.Id, user.Id);
 
         _context.Shops.Add(shop);
         await _context.SaveChangesAsync(cancellationToken);
