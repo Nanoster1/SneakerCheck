@@ -48,10 +48,21 @@ public class ShopController(SneakerCheckDbContext context) : ApiController
 
     [HttpGet, Route("/get_all")]
     [AllowAnonymous]
-    public async Task<ActionResult<List<Shop>>> GetAll()
+    public async Task<ActionResult<List<Shop>>> GetAll(CancellationToken ct)
     { 
         return await _context.Shops
             .Include(shop => shop.ShopUrls)
-            .ToListAsync();
+            .ToListAsync(ct);
+    }
+
+    [HttpGet, Route("/get_by_id")]
+    [AllowAnonymous]
+    public async Task<ActionResult<Shop>> GetById(Guid id, CancellationToken ct)
+    {
+        var shop = await _context.Shops
+            .Include(shop => shop.ShopUrls)
+            .FirstAsync(shop => shop.Id == id, ct);
+        
+        return Ok(shop);
     }
 }
