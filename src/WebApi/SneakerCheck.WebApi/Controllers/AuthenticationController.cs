@@ -3,6 +3,7 @@ using System.Security.Claims;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 using SneakerCheck.WebApi.Authentication.Schemes;
 using SneakerCheck.WebApi.Controllers.Common;
@@ -43,6 +44,19 @@ public class AuthenticationController(SneakerCheckDbContext context, IJwtProvide
         }
 
         var token = _jwtProvider.GenerateToken(user);
+        return Ok(token);
+    }
+
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [HttpPatch]
+    public async Task<ActionResult<string>> RequestSellerRole(CancellationToken cancellationToken)
+    {
+        var user = GetUser();
+        var userModel = await _context.UserModels.FirstOrDefaultAsync(x => x.Id == user.Id, cancellationToken);
+        if (userModel is null) return NotFound();
+        userModel.Role = UserRole.Seller;
+        await _context.SaveChangesAsync(cancellationToken);
+        var token = _jwtProvider.GenerateToken(userModel);
         return Ok(token);
     }
 }
