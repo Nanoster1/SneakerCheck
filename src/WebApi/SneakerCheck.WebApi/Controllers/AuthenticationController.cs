@@ -22,7 +22,7 @@ public class AuthenticationController(SneakerCheckDbContext context, IJwtProvide
     private readonly IJwtProvider _jwtProvider = jwtProvider;
 
     [HttpPost(Routes.AuthenticationController.GoogleGetToken)]
-    [Authorize(GoogleJwtScheme.SchemeName)]
+    [Authorize(AuthenticationSchemes = GoogleJwtScheme.SchemeName)]
     public async Task<ActionResult<string>> GoogleGetToken(CancellationToken cancellationToken)
     {
         var googleId = User.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
