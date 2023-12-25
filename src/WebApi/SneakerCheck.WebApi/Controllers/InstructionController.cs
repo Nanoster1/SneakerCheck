@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 using SneakerCheck.WebApi.Controllers.Common;
 using SneakerCheck.WebApi.Data;
@@ -18,10 +19,10 @@ public class InstructionController(SneakerCheckDbContext context) : ApiControlle
     [Authorize(Roles = nameof(UserRole.Seller))]
     public async Task<ActionResult<InstructionGetDto>> Create([FromBody] InstructionCreateDto dto, CancellationToken cancellationToken)
     {
-        List<ImageModel> fakeImages = [];
-        List<ImageModel> originalImages = [];
-        List<string> descriptions = [];
-        List<InstructionContent> content = [];
+        List<ImageModel> fakeImages = new(dto.Content.Count);
+        List<ImageModel> originalImages = new(dto.Content.Count);
+        List<string> descriptions = new(dto.Content.Count);
+        List<InstructionContent> content = new(dto.Content.Count);
 
         foreach (var c in dto.Content)
         {
@@ -56,15 +57,57 @@ public class InstructionController(SneakerCheckDbContext context) : ApiControlle
         _context.Instructions.Add(instruction);
         await _context.SaveChangesAsync(cancellationToken);
 
-        var instructionGetDtos = instruction.Content
+        var instructionContentGetDtos = instruction.Content
             .Select(x => InstructionContentGetDto.FromModel(x, GetIconUrl(x.OriginalImageId), GetIconUrl(x.FakeImageId)))
             .ToList();
 
         var getDto = InstructionGetDto.FromModel(
             instruction,
             GetIconUrl(previewImage.Id),
-            instructionGetDtos);
+            instructionContentGetDtos);
 
         return Ok();
+    }
+
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [HttpGet(Routes.InstructionController.GetAll)]
+    public async Task<ActionResult<List<InstructionGetDto>>> GetAll(CancellationToken cancellationToken)
+    {
+        var instructions = await _context.Instructions.ToListAsync(cancellationToken);
+        List<InstructionGetDto> instructionGetDtos = new(instructions.Count);
+
+        foreach (var instruction in instructions)
+        {
+            var instructionContentGetDtos = instruction.Content
+                .Select(x => InstructionContentGetDto.FromModel(x, GetIconUrl(x.OriginalImageId), GetIconUrl(x.FakeImageId)))
+                .ToList();
+
+            instructionGetDtos.Add(InstructionGetDto.FromModel(
+                instruction,
+                GetIconUrl(instruction.PreviewImageId),
+                instructionContentGetDtos
+            ));
+        }
+
+        return Ok(instructionGetDtos);
+    }
+
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [HttpGet(Routes.InstructionController.GetById)]
+    public async Task<ActionResult<InstructionGetDto>> GetById(Guid instructionId, CancellationToken cancellationToken)
+    {
+        var instruction = await _context.Instructions.FirstOrDefaultAsync(x => x.Id == instructionId, cancellationToken);
+        if (instruction is null) return NotFound();
+
+        var instructionContentGetDtos = instruction.Content
+                .Select(x => InstructionContentGetDto.FromModel(x, GetIconUrl(x.OriginalImageId), GetIconUrl(x.FakeImageId)))
+                .ToList();
+
+        return InstructionGetDto.FromModel(
+            instruction,
+            GetIconUrl(instruction.PreviewImageId),
+            instructionContentGetDtos
+        );
     }
 }
