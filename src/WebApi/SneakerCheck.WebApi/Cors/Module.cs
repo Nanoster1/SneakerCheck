@@ -4,7 +4,7 @@ public static class Module
 {
     private static readonly string[] DevelopOrigins = [
         "http://localhost:5000",
-        "https://localhost:8080"
+        "http://localhost:8080"
     ];
 
     public static IServiceCollection AddServerCors(this IServiceCollection services, IWebHostEnvironment environment)
