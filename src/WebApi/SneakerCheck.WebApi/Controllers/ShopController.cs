@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using SneakerCheck.WebApi.Authentication.Models;
 using SneakerCheck.WebApi.Controllers.Common;
 using SneakerCheck.WebApi.Data;
 using SneakerCheck.WebApi.Dto;

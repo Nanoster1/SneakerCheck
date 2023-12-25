@@ -1,5 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
-
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.IdentityModel.JsonWebTokens;
 
@@ -26,8 +24,7 @@ public static class GoogleJwtScheme
                     return jwt;
                 },
                 RequireExpirationTime = false,
-                RequireSignedTokens = false,
-                NameClaimType = System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Name
+                RequireSignedTokens = false
             };
         });
 

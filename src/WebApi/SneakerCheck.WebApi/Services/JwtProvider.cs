@@ -4,7 +4,6 @@ using System.Text;
 
 using Microsoft.IdentityModel.Tokens;
 
-using SneakerCheck.WebApi.Authentication.Constants;
 using SneakerCheck.WebApi.Authentication.Schemes;
 using SneakerCheck.WebApi.Models;
 using SneakerCheck.WebApi.Services.Interfaces;
@@ -18,11 +17,11 @@ public class JwtProvider : IJwtProvider
         var currentTime = DateTime.UtcNow;
         var claims = new List<Claim>
         {
-            new(UserClaimTypes.Id, user.Id),
-            new(UserClaimTypes.Name, user.Name),
-            new(UserClaimTypes.Role, user.Role.ToString())
+            new(ClaimTypes.NameIdentifier, user.Id),
+            new(ClaimTypes.Name, user.Name),
+            new(ClaimTypes.Role, user.Role.ToString())
         };
-        var identity = new ClaimsIdentity(claims, JwtScheme.SchemeName, UserClaimTypes.Name, UserClaimTypes.Role);
+        var identity = new ClaimsIdentity(claims, JwtScheme.SchemeName, ClaimTypes.Name, ClaimTypes.Role);
 
         var jwt = new JwtSecurityToken(
                 issuer: "http://localhost",
