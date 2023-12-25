@@ -1,6 +1,6 @@
 using SneakerCheck.WebApi.Models;
 
-namespace SneakerCheck.WebApi.Dto;
+namespace SneakerCheck.WebApi.Dto.ShopDto;
 
 public record ShopGetDto(
     Guid Id,
