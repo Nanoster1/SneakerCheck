@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +12,7 @@ public class ImageModelController(SneakerCheckDbContext context) : ApiController
 {
     private readonly SneakerCheckDbContext _context = context;
 
+    [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [HttpGet(Routes.ImageModelController.GetById)]
