@@ -30,5 +30,8 @@ public class ShopConfiguration : IEntityTypeConfiguration<Shop>
 
         builder.HasMany(x => x.ShopUrls)
             .WithOne();
+
+        builder.Navigation(x => x.ShopUrls)
+            .AutoInclude();
     }
 }

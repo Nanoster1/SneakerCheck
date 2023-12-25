@@ -11,12 +11,14 @@ namespace SneakerCheck.WebApi.Controllers.Common;
 [ApiController]
 public abstract class ApiController : ControllerBase
 {
-    protected User GetUser()
+    protected User? GetUser()
     {
         var claims = User.Claims;
-        return new User(
-            claims.First(cl => cl.Type == ClaimTypes.NameIdentifier).Value,
-            User.Identity?.Name ?? throw new NullReferenceException(nameof(User.Identity)),
-            claims.First(cl => cl.Type == ClaimTypes.Role).Value);
+
+        var id = claims.FirstOrDefault(cl => cl.Type == ClaimTypes.NameIdentifier)?.Value;
+        var name = User.Identity?.Name;
+        var role = claims.FirstOrDefault(cl => cl.Type == ClaimTypes.Role)?.Value;
+
+        return id is null || name is null || role is null ? null : new User(id, name, role);
     }
 }

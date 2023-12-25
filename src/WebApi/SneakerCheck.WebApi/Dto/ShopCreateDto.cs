@@ -2,12 +2,26 @@ using SneakerCheck.WebApi.Models;
 
 namespace SneakerCheck.WebApi.Dto;
 
-public class ShopCreateDto
+public record ShopCreateDto(
+    string Name,
+    string City,
+    string Address,
+    string Description,
+    ImageCreateDto Icon,
+    List<ShopUrl> ShopUrls)
 {
-    public required string Name { get; set; }
-    public required string City { get; set; }
-    public required string Address { get; set; }
-    public required string Description { get; set; }
-    public required ImageCreateDto Icon { get; set; }
-    public required List<ShopUrl> ShopUrls { get; set; }
+    public static Shop ToModel(ShopCreateDto dto, Guid iconId, Guid sellerId)
+    {
+        return new Shop
+        {
+            Name = dto.Name,
+            City = dto.City,
+            Address = dto.Address,
+            Description = dto.Description,
+            IconId = iconId,
+            ShopUrls = dto.ShopUrls,
+            Rate = 0,
+            SellerId = sellerId
+        };
+    }
 }
