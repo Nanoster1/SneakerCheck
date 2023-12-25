@@ -1,0 +1,32 @@
+@import '../../styles/variables';
+
+@keyframes moveUpDown {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-30px);
+  }
+}
+.sneakers {
+  position: relative;
+  overflow: hidden;
+  animation: moveUpDown 1s infinite alternate; /* Плавное движение вверх и вниз */
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
+.gradientText {
+  @include light-gradient-animation;
+  background: $toxic-gradient;
+  -webkit-background-clip: text;
+  background-size: 140% 100%;
+  background-clip: text;
+  color: transparent;
+}
+
+.titleSneakersContainer {
+  max-width: 1400px;
+  margin: 0 auto;
+}

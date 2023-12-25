@@ -1,0 +1,27 @@
+.contentContainer {
+  display: flex;
+  justify-content: stretch;
+  gap: 10px;
+  .contentImageContainer {
+    cursor: pointer;
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .contentImage {
+      width: 100%;
+    }
+
+    .imageTag {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      width: 60px;
+    }
+  }
+}
+
+

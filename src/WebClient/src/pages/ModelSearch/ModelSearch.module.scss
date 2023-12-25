@@ -1,0 +1,17 @@
+.categoryCard {
+  border: 1px solid #2feea8;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.selectedCard {
+  border: 1px solid #187855;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}

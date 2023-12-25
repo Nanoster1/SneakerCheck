@@ -1,0 +1,45 @@
+//@use '../styles/variables.module';
+
+// Colors
+$white: #fff;
+$black: #000;
+
+$toxic-green: #2feea8;
+$boloto: #518773;
+$malahit: #4ABA91;
+$dark-green: #43544E;
+$black-green: #29332F;
+
+$toxic-malahit: #20A172;
+$ottenok-toxic-green: #28C98E;
+$ottenok-green: #187855;
+$ottenok-dark-green: #104F38;
+
+$dark-gray: #25262b;
+$gray: #4b4e56;
+
+$light-white-text: #c0c4d0;
+$white-text: #cfd3e0;
+$red: #ED522F;
+
+// Gradients
+
+
+$toxic-gradient: linear-gradient(122deg, rgba(36,184,130,1) 17%, rgba(32,161,114,1) 36%, rgba(40,201,142,1) 56%, rgba(24,120,85,1) 81%);
+$dark-green-gradient: linear-gradient(122deg, rgba(41,51,47,1) 3%, rgba(16,79,56,1) 18%, rgba(24,120,85,1) 44%, rgba(24,120,85,1) 61%, rgba(41,51,47,1) 96%);
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+@mixin light-gradient-animation {
+  background: $toxic-gradient;
+  animation: gradientAnimation 5s ease infinite;
+}

@@ -1,0 +1,31 @@
+body {
+    background-color: #25262b;
+    margin: 0;
+    min-height: 100vh;
+}
+html {
+    min-height: 100vh;
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+}
+*::-webkit-scrollbar {
+    width: 8px; /* Ширина скроллбара. Замените на нужную. */
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #2feea8; /* Прозрачный цвет бегунка */
+    border-radius: 4px; /* Закруглить углы бегунка */
+}
+
+/* Стили для трека скроллбара (фона) */
+*::-webkit-scrollbar-track {
+    background: transparent; /* Прозрачный фон трека */
+}
+
+/* Стили для трека скроллбара при наведении */
+*::-webkit-scrollbar-track:hover {
+    background: rgba(0, 0, 0, 0.1); /* Цвет фона трека при наведении */
+}
