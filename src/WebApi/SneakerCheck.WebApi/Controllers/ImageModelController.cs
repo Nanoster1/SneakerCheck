@@ -18,6 +18,6 @@ public class ImageModelController(SneakerCheckDbContext context) : ApiController
     {
         var image = await _context.ImageModels.FirstOrDefaultAsync(x => x.Id == imageId, cancellationToken);
         if (image is null) return NotFound();
-        return File(image.Bytes, $"image/{image.Format}");
+        return File(image.Bytes, image.Format);
     }
 }
