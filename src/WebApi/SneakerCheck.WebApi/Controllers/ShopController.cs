@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 using SneakerCheck.WebApi.Controllers.Common;
 using SneakerCheck.WebApi.Data;
@@ -43,5 +44,14 @@ public class ShopController(SneakerCheckDbContext context) : ApiController
         await _context.SaveChangesAsync(cancellationToken);
 
         return Ok(shop);
+    }
+
+    [HttpGet, Route("/get_all")]
+    [AllowAnonymous]
+    public async Task<ActionResult<List<Shop>>> GetAll()
+    { 
+        return await _context.Shops
+            .Include(shop => shop.ShopUrls)
+            .ToListAsync();
     }
 }
