@@ -18,7 +18,7 @@ public class ShopController(SneakerCheckDbContext context) : ApiController
 
     [ProducesResponseType(StatusCodes.Status201Created)]
     [HttpPost]
-    public async Task<ActionResult<Shop>> Create([FromBody] ShopCreateDto dto, CancellationToken cancellationToken)
+    public async Task<ActionResult<ShopGetDto>> Create([FromBody] ShopCreateDto dto, CancellationToken cancellationToken)
     {
         var user = GetUser();
         if (user is null) return Unauthorized();
@@ -47,15 +47,18 @@ public class ShopController(SneakerCheckDbContext context) : ApiController
         _context.Shops.Add(shop);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return Created(Url.Action(nameof(GetById), shop.Id), shop);
+        var shopGetDto = ShopGetDto.FromModel(shop, GetIconUrl(icon.Id));
+        return Created(Url.ActionLink(nameof(GetById), null, shop.Id), shopGetDto);
     }
 
     [ProducesResponseType(StatusCodes.Status200OK)]
     [HttpGet(Routes.ShopController.GetAll)]
     public async Task<ActionResult<List<ShopGetDto>>> GetAll(CancellationToken ct)
     {
-        var shops = await _context.Shops.ToListAsync(ct);
-        return Ok(shops);
+        var shopGetDtos = (await _context.Shops
+            .ToListAsync(ct))
+            .Select(x => ShopGetDto.FromModel(x, GetIconUrl(x.IconId)));
+        return Ok(shopGetDtos);
     }
 
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -65,13 +68,15 @@ public class ShopController(SneakerCheckDbContext context) : ApiController
     {
         var shop = await _context.Shops.FirstOrDefaultAsync(shop => shop.Id == shopId, ct);
         if (shop is null) return NotFound();
+        var iconUrl = GetIconUrl(shop.IconId);
+        return ShopGetDto.FromModel(shop, iconUrl);
+    }
 
-        var iconUrl = Url.ActionLink(
+    private string GetIconUrl(Guid iconId)
+    {
+        return Url.ActionLink(
             action: nameof(ImageModelController.GetById),
             controller: nameof(ImageModelController).Replace(nameof(Controller), string.Empty),
-            values: new { imageId = shop.IconId });
-
-        if (iconUrl is null) return NotFound();
-        return ShopGetDto.FromModel(shop, iconUrl);
+            values: new { imageId = iconId }).ThrowIfNull();
     }
 }
