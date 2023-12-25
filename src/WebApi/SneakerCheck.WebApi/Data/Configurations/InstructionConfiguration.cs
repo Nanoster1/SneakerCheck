@@ -16,15 +16,13 @@ public class InstructionConfiguration : IEntityTypeConfiguration<Instruction>
         builder.Property(x => x.Description).IsRequired();
         builder.Property(x => x.Likes).IsRequired();
         builder.Property(x => x.Dislikes).IsRequired();
+        builder.Property(x => x.ProductName).IsRequired();
+
+        builder.HasIndex(x => x.ProductName);
 
         builder.HasOne<Shop>()
             .WithMany()
             .HasForeignKey(x => x.ShopId)
-            .IsRequired();
-
-        builder.HasOne<Product>()
-            .WithMany()
-            .HasForeignKey(x => x.ProductId)
             .IsRequired();
 
         builder.HasOne<ImageModel>()
@@ -32,11 +30,9 @@ public class InstructionConfiguration : IEntityTypeConfiguration<Instruction>
             .HasForeignKey<Instruction>(x => x.PreviewImageId)
             .IsRequired();
 
-        builder.OwnsMany(x => x.Content, b =>
-        {
-            b.Property(x => x.OriginalImageId).IsRequired();
-            b.Property(x => x.FakeImageId).IsRequired();
-            b.Property(x => x.ImageDescription).IsRequired();
-        });
+        builder.HasMany(x => x.Content)
+            .WithOne();
+
+        builder.Navigation(x => x.Content).AutoInclude();
     }
 }

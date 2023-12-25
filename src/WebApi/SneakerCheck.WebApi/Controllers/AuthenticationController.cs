@@ -48,7 +48,8 @@ public class AuthenticationController(SneakerCheckDbContext context, IJwtProvide
     }
 
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [HttpPatch]
+    [HttpPatch(Routes.AuthenticationController.RequestSellerRole)]
+    [Authorize(Roles = nameof(UserRole.Customer))]
     public async Task<ActionResult<string>> RequestSellerRole(CancellationToken cancellationToken)
     {
         var user = GetUser();

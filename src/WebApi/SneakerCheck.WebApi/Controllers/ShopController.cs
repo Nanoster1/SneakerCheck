@@ -17,17 +17,14 @@ public class ShopController(SneakerCheckDbContext context) : ApiController
     private readonly SneakerCheckDbContext _context = context;
 
     [ProducesResponseType(StatusCodes.Status201Created)]
-    [HttpPost]
+    [HttpPost(Routes.ShopController.Create)]
+    [Authorize(Roles = nameof(UserRole.Seller))]
     public async Task<ActionResult<ShopGetDto>> Create([FromBody] ShopCreateDto dto, CancellationToken cancellationToken)
     {
         var user = GetUser();
         if (user is null) return Unauthorized();
 
-        var icon = new ImageModel
-        {
-            Bytes = dto.Icon.Bytes,
-            Format = dto.Icon.Format
-        };
+        var icon = dto.Icon.ToModel();
 
         _context.ImageModels.Add(icon);
         await _context.SaveChangesAsync(cancellationToken);
@@ -60,13 +57,5 @@ public class ShopController(SneakerCheckDbContext context) : ApiController
         if (shop is null) return NotFound();
         var iconUrl = GetIconUrl(shop.IconId);
         return ShopGetDto.FromModel(shop, iconUrl);
-    }
-
-    private string GetIconUrl(Guid iconId)
-    {
-        return Url.ActionLink(
-            action: nameof(ImageModelController.GetById),
-            controller: nameof(ImageModelController).Replace(nameof(Controller), string.Empty),
-            values: new { imageId = iconId }).ThrowIfNull();
     }
 }

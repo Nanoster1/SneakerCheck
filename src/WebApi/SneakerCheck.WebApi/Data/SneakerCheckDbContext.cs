@@ -22,7 +22,6 @@ public class SneakerCheckDbContext(DbContextOptions<SneakerCheckDbContext> optio
     }
 
     public DbSet<Shop> Shops { get; set; }
-    public DbSet<Product> Products { get; set; }
     public DbSet<ImageModel> ImageModels { get; set; }
     public DbSet<Instruction> Instructions { get; set; }
     public DbSet<UserModel> UserModels { get; set; }

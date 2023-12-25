@@ -39,25 +39,6 @@ namespace SneakerCheck.WebApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "products",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    name = table.Column<string>(type: "TEXT", nullable: false),
-                    image_id = table.Column<Guid>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_products", x => x.id);
-                    table.ForeignKey(
-                        name: "fk_products_image_models_image_id",
-                        column: x => x.image_id,
-                        principalTable: "image_models",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "shops",
                 columns: table => new
                 {
@@ -94,7 +75,7 @@ namespace SneakerCheck.WebApi.Migrations
                     id = table.Column<Guid>(type: "TEXT", nullable: false),
                     category = table.Column<int>(type: "INTEGER", nullable: false),
                     shop_id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    product_id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    product_name = table.Column<string>(type: "TEXT", nullable: false),
                     preview_image_id = table.Column<Guid>(type: "TEXT", nullable: false),
                     description = table.Column<string>(type: "TEXT", nullable: false),
                     likes = table.Column<int>(type: "INTEGER", nullable: false),
@@ -107,12 +88,6 @@ namespace SneakerCheck.WebApi.Migrations
                         name: "fk_instructions_image_models_preview_image_id",
                         column: x => x.preview_image_id,
                         principalTable: "image_models",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "fk_instructions_products_product_id",
-                        column: x => x.product_id,
-                        principalTable: "products",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -145,22 +120,51 @@ namespace SneakerCheck.WebApi.Migrations
                 name: "instruction_content",
                 columns: table => new
                 {
-                    instruction_id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    id = table.Column<int>(type: "INTEGER", nullable: false),
+                    id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     original_image_id = table.Column<Guid>(type: "TEXT", nullable: false),
                     fake_image_id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    image_description = table.Column<string>(type: "TEXT", nullable: false)
+                    image_description = table.Column<string>(type: "TEXT", nullable: false),
+                    instruction_id = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_instruction_content", x => new { x.instruction_id, x.id });
+                    table.PrimaryKey("pk_instruction_content", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_instruction_content_image_models_fake_image_id",
+                        column: x => x.fake_image_id,
+                        principalTable: "image_models",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_instruction_content_image_models_original_image_id",
+                        column: x => x.original_image_id,
+                        principalTable: "image_models",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_instruction_content_instructions_instruction_id",
                         column: x => x.instruction_id,
                         principalTable: "instructions",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "ix_instruction_content_fake_image_id",
+                table: "instruction_content",
+                column: "fake_image_id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_instruction_content_instruction_id",
+                table: "instruction_content",
+                column: "instruction_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_instruction_content_original_image_id",
+                table: "instruction_content",
+                column: "original_image_id",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_instructions_preview_image_id",
@@ -169,20 +173,14 @@ namespace SneakerCheck.WebApi.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_instructions_product_id",
+                name: "ix_instructions_product_name",
                 table: "instructions",
-                column: "product_id");
+                column: "product_name");
 
             migrationBuilder.CreateIndex(
                 name: "ix_instructions_shop_id",
                 table: "instructions",
                 column: "shop_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_products_image_id",
-                table: "products",
-                column: "image_id",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_shop_url_shop_id",
@@ -218,9 +216,6 @@ namespace SneakerCheck.WebApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "instructions");
-
-            migrationBuilder.DropTable(
-                name: "products");
 
             migrationBuilder.DropTable(
                 name: "shops");

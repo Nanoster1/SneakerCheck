@@ -23,4 +23,12 @@ public abstract class ApiController : ControllerBase
 
         return new User(id, name.ThrowIfNull(), role);
     }
+
+    protected string GetIconUrl(Guid iconId)
+    {
+        return Url.ActionLink(
+            action: nameof(ImageModelController.GetById),
+            controller: nameof(ImageModelController).Replace(nameof(Controller), string.Empty),
+            values: new { imageId = iconId }).ThrowIfNull();
+    }
 }

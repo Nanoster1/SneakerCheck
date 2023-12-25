@@ -11,7 +11,7 @@ using SneakerCheck.WebApi.Data;
 namespace SneakerCheck.WebApi.Migrations
 {
     [DbContext(typeof(SneakerCheckDbContext))]
-    [Migration("20231225181308_Init")]
+    [Migration("20231225203952_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -71,9 +71,10 @@ namespace SneakerCheck.WebApi.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("preview_image_id");
 
-                    b.Property<Guid>("ProductId")
+                    b.Property<string>("ProductName")
+                        .IsRequired()
                         .HasColumnType("TEXT")
-                        .HasColumnName("product_id");
+                        .HasColumnName("product_name");
 
                     b.Property<Guid>("ShopId")
                         .HasColumnType("TEXT")
@@ -86,8 +87,8 @@ namespace SneakerCheck.WebApi.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_instructions_preview_image_id");
 
-                    b.HasIndex("ProductId")
-                        .HasDatabaseName("ix_instructions_product_id");
+                    b.HasIndex("ProductName")
+                        .HasDatabaseName("ix_instructions_product_name");
 
                     b.HasIndex("ShopId")
                         .HasDatabaseName("ix_instructions_shop_id");
@@ -95,30 +96,45 @@ namespace SneakerCheck.WebApi.Migrations
                     b.ToTable("instructions", (string)null);
                 });
 
-            modelBuilder.Entity("SneakerCheck.WebApi.Models.Product", b =>
+            modelBuilder.Entity("SneakerCheck.WebApi.Models.InstructionContent", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("id");
 
-                    b.Property<Guid>("ImageId")
+                    b.Property<Guid>("FakeImageId")
                         .HasColumnType("TEXT")
-                        .HasColumnName("image_id");
+                        .HasColumnName("fake_image_id");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("ImageDescription")
                         .IsRequired()
                         .HasColumnType("TEXT")
-                        .HasColumnName("name");
+                        .HasColumnName("image_description");
+
+                    b.Property<Guid?>("InstructionId")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("instruction_id");
+
+                    b.Property<Guid>("OriginalImageId")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("original_image_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_products");
+                        .HasName("pk_instruction_content");
 
-                    b.HasIndex("ImageId")
+                    b.HasIndex("FakeImageId")
                         .IsUnique()
-                        .HasDatabaseName("ix_products_image_id");
+                        .HasDatabaseName("ix_instruction_content_fake_image_id");
 
-                    b.ToTable("products", (string)null);
+                    b.HasIndex("InstructionId")
+                        .HasDatabaseName("ix_instruction_content_instruction_id");
+
+                    b.HasIndex("OriginalImageId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_instruction_content_original_image_id");
+
+                    b.ToTable("instruction_content", (string)null);
                 });
 
             modelBuilder.Entity("SneakerCheck.WebApi.Models.Shop", b =>
@@ -237,65 +253,34 @@ namespace SneakerCheck.WebApi.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_instructions_image_models_preview_image_id");
 
-                    b.HasOne("SneakerCheck.WebApi.Models.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_instructions_products_product_id");
-
                     b.HasOne("SneakerCheck.WebApi.Models.Shop", null)
                         .WithMany()
                         .HasForeignKey("ShopId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_instructions_shops_shop_id");
-
-                    b.OwnsMany("SneakerCheck.WebApi.Models.InstructionContent", "Content", b1 =>
-                        {
-                            b1.Property<Guid>("InstructionId")
-                                .HasColumnType("TEXT")
-                                .HasColumnName("instruction_id");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("INTEGER")
-                                .HasColumnName("id");
-
-                            b1.Property<Guid>("FakeImageId")
-                                .HasColumnType("TEXT")
-                                .HasColumnName("fake_image_id");
-
-                            b1.Property<string>("ImageDescription")
-                                .IsRequired()
-                                .HasColumnType("TEXT")
-                                .HasColumnName("image_description");
-
-                            b1.Property<Guid>("OriginalImageId")
-                                .HasColumnType("TEXT")
-                                .HasColumnName("original_image_id");
-
-                            b1.HasKey("InstructionId", "Id")
-                                .HasName("pk_instruction_content");
-
-                            b1.ToTable("instruction_content", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("InstructionId")
-                                .HasConstraintName("fk_instruction_content_instructions_instruction_id");
-                        });
-
-                    b.Navigation("Content");
                 });
 
-            modelBuilder.Entity("SneakerCheck.WebApi.Models.Product", b =>
+            modelBuilder.Entity("SneakerCheck.WebApi.Models.InstructionContent", b =>
                 {
                     b.HasOne("SneakerCheck.WebApi.Models.ImageModel", null)
                         .WithOne()
-                        .HasForeignKey("SneakerCheck.WebApi.Models.Product", "ImageId")
+                        .HasForeignKey("SneakerCheck.WebApi.Models.InstructionContent", "FakeImageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_products_image_models_image_id");
+                        .HasConstraintName("fk_instruction_content_image_models_fake_image_id");
+
+                    b.HasOne("SneakerCheck.WebApi.Models.Instruction", null)
+                        .WithMany("Content")
+                        .HasForeignKey("InstructionId")
+                        .HasConstraintName("fk_instruction_content_instructions_instruction_id");
+
+                    b.HasOne("SneakerCheck.WebApi.Models.ImageModel", null)
+                        .WithOne()
+                        .HasForeignKey("SneakerCheck.WebApi.Models.InstructionContent", "OriginalImageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_instruction_content_image_models_original_image_id");
                 });
 
             modelBuilder.Entity("SneakerCheck.WebApi.Models.Shop", b =>
@@ -321,6 +306,11 @@ namespace SneakerCheck.WebApi.Migrations
                         .WithMany("ShopUrls")
                         .HasForeignKey("ShopId")
                         .HasConstraintName("fk_shop_url_shops_shop_id");
+                });
+
+            modelBuilder.Entity("SneakerCheck.WebApi.Models.Instruction", b =>
+                {
+                    b.Navigation("Content");
                 });
 
             modelBuilder.Entity("SneakerCheck.WebApi.Models.Shop", b =>
