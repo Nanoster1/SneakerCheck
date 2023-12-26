@@ -26,12 +26,12 @@ public class UserController(SneakerCheckDbContext context) : ApiController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [HttpPatch(Routes.UserController.ChangeCity)]
-    public async Task<ActionResult> ChangeCity([FromBody] string city, CancellationToken cancellationToken)
+    public async Task<ActionResult> ChangeCity([FromBody] ChangeCityDto dto, CancellationToken cancellationToken)
     {
         var user = GetUser();
         var userModel = await _context.UserModels.FirstOrDefaultAsync(x => x.Id == user.Id, cancellationToken);
         if (userModel is null) return BadRequest();
-        userModel.City = city;
+        userModel.City = dto.NewCity;
         return NoContent();
     }
 }
