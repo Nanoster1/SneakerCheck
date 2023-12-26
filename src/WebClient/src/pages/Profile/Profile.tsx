@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Checkbox, Flex, Row, Spin, Typography } from 'antd'
+import { Button, Checkbox, Flex, Form, Row, Spin, Typography } from 'antd'
 import GradientText from '../../components/GradientText'
 import CitySelector from '../../components/CitySelector'
 import useFetch from '../../hooks/useFetch'
@@ -103,29 +103,40 @@ const Profile = () => {
     userProfileList.push({
       title: 'Станьте продавцом!',
       element: (
-        <div>
-          <Checkbox>
-            Я ознакомился с декларацией прав потребителя и принимаю все правила и готов заплатить 300$ мужикам.
-          </Checkbox>
-          <Button
-            type="primary"
-            onClick={handleBecomeSeller}
-            style={{ marginTop: 16 }}
+        <Form onFinish={async () => {
+          const newToken = await becomeSeller()
+          dispatch(login({jwtToken: newToken}))
+        }}>
+          <Form.Item
+            name="agree"
+            valuePropName="checked"
+            rules={[
+              {
+                validator: (_, value) =>
+                  value ? Promise.resolve() : Promise.reject(new Error('Необходимо согласиться с условиями')),
+              },
+            ]}
           >
-            Стать продавцом
-          </Button>
-        </div>
+            <Checkbox>
+              Я подтверждаю, что ознакомился и полностью согласен с условиями использования сервиса. Я обязуюсь предоставлять только достоверную информацию и подлинные инструкции по определению оригинальности товаров. Я понимаю, что за размещение недостоверной информации или поддельных инструкций могут последовать штрафные санкции. Также я согласен с взиманием платы в размере 300$ за вступление в ряды продавцов сервиса, что позволит мне пользоваться всеми преимуществами и инструментами для продвижения и защиты своих товаров.
+            </Checkbox>
+          </Form.Item>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              style={{ marginTop: 16 }}
+            >
+              Стать продавцом
+            </Button>
+          </Form.Item>
+        </Form>
       )
     })
   }
   const dispatch = useAppDispatch()
   const handleLogout = () => {
     dispatch(logout())
-  }
-
-  async function handleBecomeSeller() {
-    const newToken = await becomeSeller()
-    dispatch(login({jwtToken: newToken}))
   }
 
   const loading = shops.loading && myShop.loading && instructions.loading
@@ -158,3 +169,14 @@ const Profile = () => {
 }
 
 export default Profile
+
+// {
+//     "Profile": "Логи из профиля о стейте",
+//     "user": {
+//         "role": "Customer",
+//         "name": "Maxim Chuikov",
+//         "id": "87de28ab-e8fc-4ecc-9480-2da43ee1bcf1"
+//     },
+//     "myShop": null,
+//     "userDto": null
+// }

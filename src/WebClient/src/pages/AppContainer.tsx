@@ -13,7 +13,7 @@ const AppContainer = () => {
         <Outlet />
       </Layout.Content>
       <Layout.Footer style={{ height: '75px' }}>
-        <Row justify={'center'}>Sneakers App @2023 Created by Muzhiki</Row>
+        <Row justify={'center'}>Legit Check @2023 Created by Muzhiki</Row>
       </Layout.Footer>
     </Layout>
   )

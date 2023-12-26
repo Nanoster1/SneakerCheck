@@ -13,7 +13,7 @@ const Landing = () => {
     <Flex vertical gap={'large'} justify={'center'} style={{ marginTop: '80px' }}>
       <Flex className={cls.titleSneakersContainer} justify={'center'}>
         <Col span={12}>
-          <GradientText text={'SneakerCheck - новый сервис проверки ваших кроссовок и не только.'} />
+          <GradientText text={'Legit Check - новый сервис проверки ваших кроссовок и не только.'} />
         </Col>
         <Col span={12}>
           <div className={cls.sneakers}>

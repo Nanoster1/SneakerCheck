@@ -8,7 +8,7 @@ const Navbar: FC = () => {
     <Layout.Header style={{ display: 'flex', justifyContent: 'space-between' }}>
       <div>
         <a style={{ padding: '0 12px' }} href={RouteNames.LANDING}>
-          SneakersApp
+          Legit Check
         </a>
       </div>
       <Flex gap={4}>
