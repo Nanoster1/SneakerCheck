@@ -19,8 +19,9 @@ public class JwtProvider : IJwtProvider
         {
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new(ClaimTypes.Name, user.Name),
-            new(ClaimTypes.Role, user.Role.ToString())
+            new(ClaimTypes.Role, user.Role.ToString()),
         };
+
         var identity = new ClaimsIdentity(claims, JwtScheme.SchemeName, ClaimTypes.Name, ClaimTypes.Role);
 
         var jwt = new JwtSecurityToken(

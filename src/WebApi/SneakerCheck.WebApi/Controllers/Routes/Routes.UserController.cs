@@ -6,5 +6,6 @@ public static partial class Routes
     {
         public const string Prefix = "/user";
         public const string ChangeCity = $"{Prefix}/change-city";
+        public const string GetUserInfo = $"{Prefix}/info";
     }
 }
