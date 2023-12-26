@@ -6,4 +6,5 @@ public class UserModel
     public required string GoogleId { get; set; }
     public required string Name { get; set; }
     public required UserRole Role { get; set; }
+    public string? City { get; set; }
 }

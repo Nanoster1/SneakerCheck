@@ -8,5 +8,6 @@ public static partial class Routes
         public const string Create = Prefix;
         public const string GetAll = $"{Prefix}/all";
         public const string GetById = $"{Prefix}/{{shopId:guid}}";
+        public const string GetBySellerId = $"{Prefix}/seller/{{sellerId:guid}}";
     }
 }

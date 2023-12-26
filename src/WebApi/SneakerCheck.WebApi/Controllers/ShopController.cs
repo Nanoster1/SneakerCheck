@@ -51,11 +51,20 @@ public class ShopController(SneakerCheckDbContext context) : ApiController
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpGet(Routes.ShopController.GetById)]
-    public async Task<ActionResult<ShopGetDto?>> GetById(Guid shopId, CancellationToken ct)
+    public async Task<ActionResult<ShopGetDto>> GetById(Guid shopId, CancellationToken ct)
     {
         var shop = await _context.Shops.FirstOrDefaultAsync(shop => shop.Id == shopId, ct);
         if (shop is null) return NotFound();
-        var iconUrl = GetIconUrl(shop.IconId);
-        return ShopGetDto.FromModel(shop, iconUrl);
+        return ShopGetDto.FromModel(shop, GetIconUrl(shop.IconId));
+    }
+
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [HttpGet(Routes.ShopController.GetBySellerId)]
+    public async Task<ActionResult<ShopGetDto>> GetBySellerId(Guid sellerId, CancellationToken cancellationToken)
+    {
+        var shop = await _context.Shops.FirstOrDefaultAsync(x => x.SellerId == sellerId, cancellationToken);
+        if (shop is null) return NotFound();
+        return ShopGetDto.FromModel(shop, GetIconUrl(shop.IconId));
     }
 }

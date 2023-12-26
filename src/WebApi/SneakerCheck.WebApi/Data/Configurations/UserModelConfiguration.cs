@@ -15,6 +15,7 @@ public class UserModelConfiguration : IEntityTypeConfiguration<UserModel>
         builder.Property(x => x.GoogleId).IsRequired();
         builder.Property(x => x.Name).IsRequired();
         builder.Property(x => x.Role).IsRequired();
+        builder.Property(x => x.City).IsRequired(false);
 
         builder.HasIndex(x => x.GoogleId).IsUnique();
     }
