@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SneakerCheck.WebApi.Data;
 
@@ -10,9 +11,11 @@ using SneakerCheck.WebApi.Data;
 namespace SneakerCheck.WebApi.Migrations
 {
     [DbContext(typeof(SneakerCheckDbContext))]
-    partial class SneakerCheckDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231226142239_AddedUserCity")]
+    partial class AddedUserCity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
