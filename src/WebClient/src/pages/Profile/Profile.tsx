@@ -35,6 +35,12 @@ const Profile = () => {
       element: <CitySelector defaultCity={userDto.data?.city} onSelect={changeUserCityHandler} />
     }
   ]
+  console.log({
+    Profile: 'Логи из профиля о стейте',
+    user,
+    myShop: myShop.data,
+    userDto: userDto.data
+  })
   if (user?.role === "Seller") {
     if (myShop.data) {
       userProfileList.push({
@@ -75,6 +81,22 @@ const Profile = () => {
           )
         })
       }
+    }
+    else {
+      userProfileList.push({
+        title: 'Создайте ваш магазин, чтобы получить доступ к инструкциям',
+        element: (
+          <Flex vertical gap={16} style={{ maxHeight: '60vh', overflowY: 'scroll' }}>
+            <Button
+              onClick={() => navigation(RouteNames.SHOPS_CREATE_EDIT)}
+              size={'large'}
+              type="primary"
+              icon={<PlusOutlined />}>
+              Создать магазин
+            </Button>
+          </Flex>
+        )
+      })
     }
   }
   else {

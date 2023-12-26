@@ -27,6 +27,15 @@ function parseJwt(token: string): UserDTO_JWT | undefined {
     const id = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
     const name = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']
     const role = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
+
+    console.log({
+      // @ts-ignore
+      State: 'Проверка состояния токена',
+      role: role,
+      name: name,
+      id: id
+    })
+
     return {
       // @ts-ignore
       role: role,
