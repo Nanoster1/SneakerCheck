@@ -10,7 +10,7 @@ module.exports = {
     mode: NODE_ENV,
     entry: './src/index.tsx',
     output: {
-        path: path.resolve(__dirname, './dist'),
+        path: path.resolve(__dirname, '../WebApi/SneakerCheck.WebApi/wwwroot'),
         filename: 'bundle.js',
         publicPath: '/'
     },
