@@ -11,8 +11,8 @@ using SneakerCheck.WebApi.Data;
 namespace SneakerCheck.WebApi.Migrations
 {
     [DbContext(typeof(SneakerCheckDbContext))]
-    [Migration("20231226142239_AddedUserCity")]
-    partial class AddedUserCity
+    [Migration("20231226173953_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -191,7 +191,13 @@ namespace SneakerCheck.WebApi.Migrations
 
             modelBuilder.Entity("SneakerCheck.WebApi.Models.ShopUrl", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("id");
+
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("TEXT")
                         .HasColumnName("name");
 
@@ -204,7 +210,7 @@ namespace SneakerCheck.WebApi.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("url");
 
-                    b.HasKey("Name")
+                    b.HasKey("Id")
                         .HasName("pk_shop_url");
 
                     b.HasIndex("ShopId")

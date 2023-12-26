@@ -188,7 +188,13 @@ namespace SneakerCheck.WebApi.Migrations
 
             modelBuilder.Entity("SneakerCheck.WebApi.Models.ShopUrl", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("id");
+
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("TEXT")
                         .HasColumnName("name");
 
@@ -201,7 +207,7 @@ namespace SneakerCheck.WebApi.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("url");
 
-                    b.HasKey("Name")
+                    b.HasKey("Id")
                         .HasName("pk_shop_url");
 
                     b.HasIndex("ShopId")

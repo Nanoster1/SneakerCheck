@@ -9,7 +9,7 @@ public class ShopUrlConfiguration : IEntityTypeConfiguration<ShopUrl>
 {
     public void Configure(EntityTypeBuilder<ShopUrl> builder)
     {
-        builder.HasKey(x => x.Name);
+        builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Name).ValueGeneratedNever();
         builder.Property(x => x.Url).IsRequired();

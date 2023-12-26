@@ -31,7 +31,8 @@ namespace SneakerCheck.WebApi.Migrations
                     id = table.Column<Guid>(type: "TEXT", nullable: false),
                     google_id = table.Column<string>(type: "TEXT", nullable: false),
                     name = table.Column<string>(type: "TEXT", nullable: false),
-                    role = table.Column<int>(type: "INTEGER", nullable: false)
+                    role = table.Column<int>(type: "INTEGER", nullable: false),
+                    city = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -102,13 +103,15 @@ namespace SneakerCheck.WebApi.Migrations
                 name: "shop_url",
                 columns: table => new
                 {
+                    id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     name = table.Column<string>(type: "TEXT", nullable: false),
                     url = table.Column<string>(type: "TEXT", nullable: false),
                     shop_id = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_shop_url", x => x.name);
+                    table.PrimaryKey("pk_shop_url", x => x.id);
                     table.ForeignKey(
                         name: "fk_shop_url_shops_shop_id",
                         column: x => x.shop_id,
