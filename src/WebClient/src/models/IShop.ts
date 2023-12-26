@@ -3,7 +3,7 @@ export interface Social {
   name: string
 }
 
-export default interface IShop {
+export interface IShopCreate {
   id?: string
   name: string
   city: string
@@ -13,6 +13,22 @@ export default interface IShop {
     bytes: string,
     format: string
   },
+  shopUrls: Social[]
+  rating?: number
+}
+
+export default interface IShop {
+  id?: string
+  sellerId: string
+  name: string
+  city: string
+  address: string
+  description: string
+  icon: {
+    bytes: string,
+    format: string
+  },
+  iconUrl?: string
   shopUrls: Social[]
   rating?: number
 }

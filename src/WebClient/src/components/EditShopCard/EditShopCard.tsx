@@ -2,18 +2,20 @@ import React, {useEffect, useState} from 'react';
 import {Button, Card, Col, Flex, Form, Input, Modal, Row, Select, Upload, UploadFile, UploadProps} from 'antd';
 import ImgCrop from 'antd-img-crop';
 import {EditOutlined} from '@ant-design/icons';
-import IShop from '../../models/IShop';
+import IShop, { IShopCreate } from '../../models/IShop'
 import cls from './EditShopCard.module.scss'
 import ShopCard from "../ShopCard";
 import socialNameEnum from "../../models/SocialNameEnum";
-import {createShop, updateShop} from "../../services/ShopsService";
-import getBase64 from '../../utils/getBase64'
+import {createShop} from "../../services/ShopsService";
+import getBase64, { getBytesFromBase64, getFormatFromBase64 } from '../../utils/getBase64'
+import CitySelector from '../CitySelector'
 
 const {Option} = Select;
 
 const EditShopCard = ({content, isLoading, onSave}: { content?: IShop | null, isLoading: boolean, onSave: () => void}) => {
 
   const [editMode, setEditMode] = useState(false);
+  const [city, setCity] = useState<string | undefined>(undefined)
 
   useEffect(() => {
     if (!isLoading) {
@@ -37,14 +39,13 @@ const EditShopCard = ({content, isLoading, onSave}: { content?: IShop | null, is
     setPreviewOpen(true)
   }
 
-  const handleCancelEdit = () => {
-    setEditMode(false)
-  }
+  // const handleCancelEdit = () => {
+  //   setEditMode(false)
+  // }
 
   const handleSave = async (values: {
     shopName: string
     description: string
-    city: string
     address: string
     icon: string
     socials: {
@@ -53,37 +54,27 @@ const EditShopCard = ({content, isLoading, onSave}: { content?: IShop | null, is
     }[]
   }) => {
     setEditMode(false);
-
-    console.log({values, fileList})
-
     const base64Full = await getBase64(fileList[0].originFileObj as Blob)
-    const bytesStarts = base64Full.indexOf(',')
-    const base64 = base64Full.slice(bytesStarts + 1)
-
-    console.log({
-      base64Full,
-      base64,
-      bytesStarts
-    })
-
-
-    const shop: IShop = {
-      city: values.city,
+    const shop: IShopCreate = {
+      city: city ?? 'Челябинск',
       address: values.address,
       name: values.shopName,
       description: values.description,
       icon: {
-        bytes: base64,
-        format: fileList[0]?.originFileObj?.type ?? ''
+        bytes: getBytesFromBase64(base64Full),
+        format: getFormatFromBase64(base64Full)
       },
       shopUrls:values.socials,
     }
+    console.log({shop})
 
-    if (content?.id) {
-      await updateShop(content.id, shop).then(() => onSave())
-    } else {
-      await createShop(shop).then(() => onSave())
-    }
+
+    await createShop(shop).then(() => onSave())
+    // if (content?.id) {
+    //   await updateShop(content.id, shop).then(() => onSave())
+    // } else {
+    //   await createShop(shop).then(() => onSave())
+    // }
   };
 
   const onChange: UploadProps['onChange'] = ({fileList: newFileList}) => {
@@ -91,7 +82,7 @@ const EditShopCard = ({content, isLoading, onSave}: { content?: IShop | null, is
       f.status = "done"
       return f
     }))
-  };
+  }
 
   return !editMode && content ? (
     <Flex vertical gap={8}>
@@ -109,10 +100,9 @@ const EditShopCard = ({content, isLoading, onSave}: { content?: IShop | null, is
         initialValues={{
           shopName: content?.name,
           description: content?.description,
-          city: content?.address?.city,
-          street: content?.address?.street,
-          house: content?.address?.house,
-          socials: content?.socials?.map((social) => ({
+          city: content?.city,
+          address: content?.address,
+          socials: content?.shopUrls?.map((social) => ({
             socialName: social?.name,
             url: social?.url
           }))
@@ -121,13 +111,13 @@ const EditShopCard = ({content, isLoading, onSave}: { content?: IShop | null, is
         <Row gutter={[16, 16]}>
           <Col span={8}>
             <Modal open={previewOpen} footer={null} onCancel={() => setPreviewOpen(false)}>
-              <img alt="example" style={{width: '100%'}} src={previewImage}/>
+              <img alt="Аватарка" style={{width: '100%'}} src={previewImage}/>
             </Modal>
             <Form.Item name='icon' rules={[
               {
                 message: 'Загрузите аватар магазина', required: true,
                 validator: () => {
-                  return fileList.length > 0 ? Promise.resolve() : Promise.reject('э')
+                  return fileList.length > 0 ? Promise.resolve() : Promise.reject('Добавьте аватар магазина')
                 },
                 validateTrigger: 'onSubmit'
               }]}>
@@ -153,8 +143,8 @@ const EditShopCard = ({content, isLoading, onSave}: { content?: IShop | null, is
               <Input.TextArea/>
             </Form.Item>
             <Form.Item label="Город" name="city"
-                       rules={[{required: true, message: 'Введите город, где расположен магазин'}]}>
-              <Input/>
+                       rules={[{validator: () => city ? Promise.resolve() : Promise.reject(new Error('Выберите город, где расположен магазин'))}]}>
+              <CitySelector defaultCity={city} onSelect={(val) => setCity(val.city)} />
             </Form.Item>
             <Form.Item label="Адрес" name="address"
                        rules={[{required: true, message: 'Введите адрес, где расположен магазин'}]}>
@@ -165,15 +155,26 @@ const EditShopCard = ({content, isLoading, onSave}: { content?: IShop | null, is
 
         <Row style={{marginTop: '16px'}}>
           <Col>
-            <Form.List name="socials">
-              {(fields, {add, remove}) => (
+            <Form.List name="socials"
+            rules={[{
+              validator: (_, value) => {
+                console.log({value})
+                return value?.length > 0 ? Promise.resolve() : Promise.reject('Добавьте хотя бы одну соц. сеть')
+              }
+            }]}
+            >
+              {(fields, {add, remove}, {errors}) => (
                 <>
+                  <Form.Item
+                    help={<Form.ErrorList errors={errors} />}
+                  />
                   {fields.map(({key, name, fieldKey, ...restField}) => (
                     <Row key={key} gutter={[8, 8]}>
                       <Col span={8}>
                         <Form.Item
                           {...restField}
                           name={[name, 'name']}
+                          //@ts-ignore
                           fieldKey={[fieldKey, 'name']}
                           rules={[{required: true, message: 'Выберите социальную сеть'}]}
                         >
@@ -192,6 +193,7 @@ const EditShopCard = ({content, isLoading, onSave}: { content?: IShop | null, is
                         <Form.Item
                           {...restField}
                           name={[name, 'url']}
+                          //@ts-ignore
                           fieldKey={[fieldKey, 'url']}
                           rules={[{required: true, message: 'Введите URL'}]}
                         >
@@ -215,7 +217,7 @@ const EditShopCard = ({content, isLoading, onSave}: { content?: IShop | null, is
               <Button type="primary" htmlType="submit">
                 Сохранить
               </Button>
-              <Button onClick={handleCancelEdit}>Отмена</Button>
+              {/* <Button onClick={handleCancelEdit}>Отмена</Button> */}
             </Form.Item>
           </Col>
         </Row>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { SearchOutlined, PlusOutlined } from '@ant-design/icons'
+import { SearchOutlined } from '@ant-design/icons'
 import { Button, Col, Flex } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { RouteNames } from '../../components/AppRouter'
@@ -34,26 +34,6 @@ const Landing = () => {
       <Flex span={15} gap={25} justify={'center'} style={{ marginTop: '5vh' }}>
         <Button onClick={() => navigation(RouteNames.SHOPS)} size={'large'} type="primary" icon={<SearchOutlined />}>
           Посмотреть магазины
-        </Button>
-        <Button
-          onClick={() => navigation(RouteNames.SHOPS_CREATE_EDIT)}
-          size={'large'}
-          type="primary"
-          icon={<PlusOutlined />}>
-          Создать магазин
-        </Button>
-      </Flex>
-
-      <Flex span={24} justify={'center'} style={{ marginTop: '5vh' }}>
-        <GradientText text={'Создание инструкции'} />
-      </Flex>
-      <Flex span={15} justify={'center'} style={{ margin: '5vh 0' }}>
-        <Button
-          onClick={() => navigation(RouteNames.CREATE_INSTRUCTION)}
-          size={'large'}
-          type="primary"
-          icon={<PlusOutlined />}>
-          Создать инструкцию
         </Button>
       </Flex>
     </Flex>

@@ -1,12 +1,15 @@
 import { AxiosResponse } from 'axios'
-import IInstructionPreview from '../models/IInstructionPreview'
-import IInstruction from '../models/IInstruction'
-import apiClient from './client'
+import { workingApiClient } from './client'
+import { IInstructionDataDTO, IInstructionDataSave } from '../pages/CreateInstruction/types'
 
-export async function getInstructions(): Promise<AxiosResponse<IInstructionPreview[]>> {
-  return apiClient.get<IInstructionPreview[]>('/instructionsPreview.json')
+export async function getInstructions(): Promise<AxiosResponse<IInstructionDataDTO[]>> {
+  return workingApiClient.get<IInstructionDataDTO[]>('instruction/all')
 }
 
-export async function getInstruction(id: string): Promise<AxiosResponse<IInstruction[]>> {
-  return apiClient.get<IInstruction[]>('/FullInstructions.json')
+export async function getInstruction(id: string): Promise<AxiosResponse<IInstructionDataDTO>> {
+  return workingApiClient.get<IInstructionDataDTO>(`instruction/${id}`)
+}
+
+export async function postInstruction(instruction: IInstructionDataSave) {
+  return workingApiClient.post('instruction', instruction)
 }

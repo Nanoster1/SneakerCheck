@@ -20,10 +20,11 @@ const UploadButton = (
   </div>
 );
 
-const CreateInstructionCard = ({formValues, saveCallback, deleteCard}: {
+const CreateInstructionCard = ({formValues, saveCallback, deleteCard, cardKey}: {
   formValues: IInstructionCard,
   saveCallback: (data: IInstructionCard) => void,
   deleteCard: () => void
+  cardKey: number
 }) => {
   const imgOriginalRef = React.createRef<HTMLImageElement>();
   const imgFakeRef = React.createRef<HTMLImageElement>();
@@ -43,18 +44,17 @@ const CreateInstructionCard = ({formValues, saveCallback, deleteCard}: {
         if (ref.current) {
           ref.current.src = event.dataUrl;
           const newState = {...formValues}
-          newState.editedPhotos[whoseRef] = event.dataUrl
+          newState.editedPhotos[whoseRef] = {base64: event.dataUrl}
           newState.markerState[whoseRef] = event.state
           saveCallback(newState)
         }
       });
       markerArea.addEventListener("beforeclose", (event) => {
         if (!confirm("Изменения не сохранятся, вы уверены?")) {
-          event.preventDefault();
-
+          event.preventDefault()
         } else if (ref.current?.src)
-          ref.current.src = formValues.editedPhotos[whoseRef] ?? ''
-      });
+          ref.current.src = formValues.editedPhotos[whoseRef]?.base64 ?? ''
+      })
     }
   }
 
@@ -63,17 +63,17 @@ const CreateInstructionCard = ({formValues, saveCallback, deleteCard}: {
     return {
       name: 'file',
       beforeUpload: () => false,
-      onPreview: () => handlePreview(formValues.originalPhotos[whoseRef] || '', whoseRef),
+      onPreview: () => handlePreview(formValues.originalPhotos[whoseRef]?.base64 || '', whoseRef),
       multiple: false,
       listType: "picture-card",
-      action: null,
+      action: undefined,
       maxCount: 1,
       async onChange(info) {
         const fileTypeCheck = availableFiles.includes(info.file.type ?? '')
         if (!fileTypeCheck) {
           message.error('Вы можете прикрепить png, jpeg');
         }
-        const isLt2M = info.file.size / 1024 / 1024 < 5;
+        const isLt2M = info?.file?.size ?? 0 / 1024 / 1024 < 5;
         if (!isLt2M) {
           message.error('Изображение должно быть меньше 5MB');
         }
@@ -87,8 +87,8 @@ const CreateInstructionCard = ({formValues, saveCallback, deleteCard}: {
           })) as string[]
 
           const newState = {...formValues}
-          newState.editedPhotos[whoseRef] = dataUrlList[0]
-          newState.originalPhotos[whoseRef] = dataUrlList[0]
+          newState.editedPhotos[whoseRef] = {base64: dataUrlList[0]}
+          newState.originalPhotos[whoseRef] = {base64: dataUrlList[0]}
           newState.markerState[whoseRef] = undefined
           saveCallback(newState)
         }
@@ -119,7 +119,7 @@ const CreateInstructionCard = ({formValues, saveCallback, deleteCard}: {
       </div>
 
       <Divider>Редактируемые фотографии</Divider>
-      <Form.Item name={`files_${formValues.id}` as any}
+      <Form.Item name={['files', cardKey]}
                  rules={[{required: true, validator: validateFilesCount, validateTrigger: 'onSubmit'}]}>
         <Row>
           <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
@@ -150,13 +150,12 @@ const CreateInstructionCard = ({formValues, saveCallback, deleteCard}: {
             <Tooltip placement={'top'} title={'Нажмите, чтобы выделить различия'}
                      mouseEnterDelay={0.6}>
               <div className={imageCls.contentImageContainer}>
-                <img className={imageCls.contentImage} src={formValues.originalPhotos.fake} alt={'Фейк'}
+                <img className={imageCls.contentImage} src={formValues.originalPhotos.fake.base64} alt={'Фейк'}
                      ref={imgFakeRef} onClick={() => {
                   if (imgFakeRef.current?.src) {
-                    imgFakeRef.current.src = formValues.originalPhotos.fake ?? ''
+                    imgFakeRef.current.src = formValues.originalPhotos.fake?.base64 ?? ''
                     showMarkerArea(imgFakeRef, 'fake')
                   }
-
                 }}/>
                 <img className={imageCls.imageTag} alt={'fake'} src={'/assets/legitIcons/fake.png'}/>
               </div>
@@ -169,11 +168,11 @@ const CreateInstructionCard = ({formValues, saveCallback, deleteCard}: {
             <Tooltip placement={'top'} title={'Нажмите, чтобы выделить различия'}
                      mouseEnterDelay={0.6}>
               <div className={imageCls.contentImageContainer}>
-                <img className={imageCls.contentImage} src={formValues.originalPhotos.original}
+                <img className={imageCls.contentImage} src={formValues.originalPhotos.original.base64}
                      alt={'Оригинал'}
                      ref={imgOriginalRef} onClick={() => {
                   if (imgOriginalRef.current?.src) {
-                    imgOriginalRef.current.src = formValues.originalPhotos.original ?? ''
+                    imgOriginalRef.current.src = formValues.originalPhotos.original?.base64 ?? ''
                     showMarkerArea(imgOriginalRef, 'original')
                   }
                 }}/>
@@ -185,14 +184,14 @@ const CreateInstructionCard = ({formValues, saveCallback, deleteCard}: {
       </div>
 
       <Form.Item
-        name={`description_${formValues.id}` as any}
+        name={['description', cardKey] as any}
         label="Описание"
         rules={[{required: true, message: 'Введите описание различий'}]}
         style={{marginTop: '24px'}}
       >
         <ReactQuill preserveWhitespace={false} onChange={(value => {
           const newState = {...formValues}
-          newState.description = value
+          newState.imageDescription = value
           saveCallback(newState)
         })}/>
       </Form.Item>

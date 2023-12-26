@@ -18,7 +18,12 @@ const InstructionContentCard = ({ content }: { content: IContent }) => {
         </div>
       </div>
       <Divider />
-      <Typography.Text>{content.imageDescription}</Typography.Text>
+
+
+
+      <Typography.Text>
+        <div  dangerouslySetInnerHTML={{__html: content.imageDescription}}/>
+      </Typography.Text>
     </Card>
   )
 }

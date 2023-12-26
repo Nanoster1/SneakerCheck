@@ -1,25 +1,29 @@
 import React from 'react'
 import { Avatar, Badge, Card, Col, Divider, Image, Row, Typography } from 'antd'
 import { LikeFilled, DislikeFilled } from '@ant-design/icons'
-import IInstructionPreview from '../../models/IInstructionPreview'
 import { RouteNames } from '../AppRouter'
 import cls from './InstructionCard.module.scss'
+import { IInstructionDataDTO } from '../../pages/CreateInstruction/types'
+import useFetch from '../../hooks/useFetch'
+import { getShop } from '../../services/ShopsService'
 
-const InstructionCard = ({ content }: { content: IInstructionPreview }) => {
+const InstructionCard = ({ content }: { content: IInstructionDataDTO }) => {
   console.log({
     content
   })
 
+  const shop = useFetch(getShop, content.shopId ?? '0')
+
   return (
-    <a href={`${RouteNames.INSTRUCTIONS}/${content.instructionId}`}>
+    <a href={`${RouteNames.INSTRUCTIONS}/${content.id}`}>
       <Card>
         <Row>
           <Col span={2}>
-            <Image preview={false} src={content.shop.imageLink} width={45} style={{ borderRadius: '4px' }} />
+            <Image preview={false} src={shop.data?.iconUrl} width={45} style={{ borderRadius: '4px' }} />
           </Col>
           <Col span={22}>
             <Typography.Title style={{ margin: '0' }} level={3}>
-              {content.shop.name}
+              {shop.data?.name}
             </Typography.Title>
           </Col>
         </Row>
@@ -31,7 +35,7 @@ const InstructionCard = ({ content }: { content: IInstructionPreview }) => {
         <Row>
           <Col>
             <Badge
-              count={content.likes}
+              count={content.likes + 1}
               offset={[19, 18]}
               overflowCount={9999}
               style={{ backgroundColor: '#28C98E', color: '#4b4e56', fontWeight: 'bold' }}>
@@ -40,7 +44,7 @@ const InstructionCard = ({ content }: { content: IInstructionPreview }) => {
           </Col>
           <Col offset={2}>
             <Badge
-              count={content.dislikes}
+              count={content.dislikes + 1}
               offset={[19, 18]}
               overflowCount={9999}
               style={{ backgroundColor: '#ED522F', color: '#37393f', fontWeight: 'bold' }}>
@@ -56,7 +60,7 @@ const InstructionCard = ({ content }: { content: IInstructionPreview }) => {
         <Divider />
 
         <Row>
-          <Typography.Text type={'secondary'}>{content.modelName}</Typography.Text>
+          <Typography.Text type={'secondary'}>{content.productName}</Typography.Text>
         </Row>
       </Card>
     </a>

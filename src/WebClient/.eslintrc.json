@@ -108,9 +108,12 @@
     "react/display-name": "off"
   },
   "settings": {
+    "import/extensions": [".scss"],
     "import/resolver": {
       "typescript": true,
-      "node": true
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx", ".scss"]
+      }
     },
     "react": {
       "version": "detect"
