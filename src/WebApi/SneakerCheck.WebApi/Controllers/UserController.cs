@@ -32,6 +32,7 @@ public class UserController(SneakerCheckDbContext context) : ApiController
         var userModel = await _context.UserModels.FirstOrDefaultAsync(x => x.Id == user.Id, cancellationToken);
         if (userModel is null) return BadRequest();
         userModel.City = dto.NewCity;
+        await _context.SaveChangesAsync(cancellationToken);
         return NoContent();
     }
 }
