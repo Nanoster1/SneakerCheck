@@ -3,6 +3,8 @@ import { Card, Col, Image, Rate, Row } from 'antd'
 import IShop from '../../models/IShop'
 import getSocialUrl from '../../utils/getSocialUrl'
 import SocialNameEnum from '../../models/SocialNameEnum'
+import { Link } from 'react-router-dom'
+import { RouteNames } from '../AppRouter'
 
 const ShopCard = ({ content }: { content: IShop }) => {
   return (
@@ -14,12 +16,14 @@ const ShopCard = ({ content }: { content: IShop }) => {
         <Col span={12}>
           <Row gutter={[0, 8]}>
             <Col span={24}>
-              <h3>{content.name}</h3>
+              <Link to={`${RouteNames.SHOPS}/${content.id}`}>
+                <h3>{content.name}</h3>
+              </Link>
             </Col>
             <Col span={24}>
               Город: {content.city}
               <br />
-              Адрес: {`Регион ${content.address}`}
+              Адрес: {content.address}
             </Col>
             <Col span={24}>
               <Rate disabled allowHalf defaultValue={content.rating} />

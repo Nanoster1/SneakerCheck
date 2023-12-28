@@ -44,14 +44,14 @@ const Profile = () => {
   if (user?.role === "Seller") {
     if (myShop.data) {
       userProfileList.push({
-        title: 'Мой магазин',
+        title: 'Ваш магазин',
         element: <ShopCard content={myShop.data} />
       })
       if (instructions.data?.filter((i) => i.shopId === myShop.data?.id).length) {
         userProfileList.push({
           title: 'Ваши инструкции',
           element: (
-            <Flex vertical gap={16} style={{ maxHeight: '60vh', overflowY: 'scroll' }}>
+            <Flex vertical gap={16}>
               <Button
                 onClick={() => navigation(RouteNames.CREATE_INSTRUCTION)}
                 size={'large'}
@@ -59,7 +59,9 @@ const Profile = () => {
                 icon={<PlusOutlined />}>
                 Создать инструкцию
               </Button>
-              {instructions.data?.filter((i) => i.shopId === myShop.data?.id).map((instr) => <InstructionCard key={instr.id} content={instr} />)}
+              <Flex vertical gap={16} style={{ maxHeight: '90vh', overflowY: 'scroll' }}>
+                {instructions.data?.filter((i) => i.shopId === myShop.data?.id).map((instr) => <InstructionCard key={instr.id} content={instr} />)}
+              </Flex>
             </Flex>
           )
         })
@@ -68,16 +70,13 @@ const Profile = () => {
         userProfileList.push({
           title: 'У вашего магазина нет ни одной инструкции',
           element: (
-            <Flex vertical gap={16} style={{ maxHeight: '60vh', overflowY: 'scroll' }}>
-              <Button
-                onClick={() => navigation(RouteNames.CREATE_INSTRUCTION)}
-                size={'large'}
-                type="primary"
-                icon={<PlusOutlined />}>
-                Создать первую инструкцию
-              </Button>
-              {instructions.data?.filter((i) => i.shopId === myShop.data?.id).map((instr) => <InstructionCard key={instr.id} content={instr} />)}
-            </Flex>
+            <Button
+              onClick={() => navigation(RouteNames.CREATE_INSTRUCTION)}
+              size={'large'}
+              type="primary"
+              icon={<PlusOutlined />}>
+              Создать первую инструкцию
+            </Button>
           )
         })
       }
@@ -169,14 +168,3 @@ const Profile = () => {
 }
 
 export default Profile
-
-// {
-//     "Profile": "Логи из профиля о стейте",
-//     "user": {
-//         "role": "Customer",
-//         "name": "Maxim Chuikov",
-//         "id": "87de28ab-e8fc-4ecc-9480-2da43ee1bcf1"
-//     },
-//     "myShop": null,
-//     "userDto": null
-// }

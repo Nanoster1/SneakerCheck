@@ -36,6 +36,7 @@ const CreateInstructionCard = ({formValues, saveCallback, deleteCard, cardKey}: 
       const colorSet = whoseRef === 'original' ? ['#28C98E'] : ['#ED522F']
       markerArea.settings.defaultColorSet = colorSet
       markerArea.settings.defaultColor = colorSet[0]
+      markerArea.settings.defaultStrokeWidth = 10
       markerArea.settings.defaultFillColor = 'transparent'
       markerArea.show()
       formValues.markerState[whoseRef] && markerArea.restoreState(formValues.markerState[whoseRef] as any)
@@ -57,7 +58,6 @@ const CreateInstructionCard = ({formValues, saveCallback, deleteCard, cardKey}: 
       })
     }
   }
-
 
   function uploadProps(whoseRef: 'original' | 'fake'): UploadProps {
     return {
@@ -83,7 +83,7 @@ const CreateInstructionCard = ({formValues, saveCallback, deleteCard, cardKey}: 
               const reader = new FileReader();
               reader.onloadend = () => resolve(reader.result);
               reader.readAsDataURL(file.originFileObj as File);
-            });
+            })
           })) as string[]
 
           const newState = {...formValues}
@@ -109,7 +109,7 @@ const CreateInstructionCard = ({formValues, saveCallback, deleteCard, cardKey}: 
   };
 
   function validateFilesCount() {
-    return formValues.originalPhotos.original || formValues.originalPhotos.fake ? Promise.resolve() : Promise.reject('Нужно прикрепить хотя бы одно фото');
+    return formValues.originalPhotos.original && formValues.originalPhotos.fake ? Promise.resolve() : Promise.reject('Нужно прикрепить две фотографии');
   }
 
   return (
@@ -129,14 +129,14 @@ const CreateInstructionCard = ({formValues, saveCallback, deleteCard, cardKey}: 
             <div className={cls.uploadBlock}>
               <Typography.Title level={3}>Фейк</Typography.Title>
               <Upload {...uploadProps('fake')}>
-                {formValues.originalPhotos.fake ? null : UploadButton}
+                {formValues.originalPhotos.fake?.base64 ? null : UploadButton}
               </Upload>
             </div>
             <Divider style={{height: '100%'}} type={'vertical'}/>
             <div className={cls.uploadBlock}>
               <Typography.Title level={3}>Оригинал</Typography.Title>
               <Upload {...uploadProps('original')}>
-                {formValues.originalPhotos.original ? null : UploadButton}
+                {formValues.originalPhotos.original?.base64 ? null : UploadButton}
               </Upload>
             </div>
           </div>
@@ -146,7 +146,7 @@ const CreateInstructionCard = ({formValues, saveCallback, deleteCard, cardKey}: 
 
       <div className={imageCls.contentContainer}>
         {
-          formValues.originalPhotos.fake && (
+          formValues.originalPhotos.fake?.base64 && (
             <Tooltip placement={'top'} title={'Нажмите, чтобы выделить различия'}
                      mouseEnterDelay={0.6}>
               <div className={imageCls.contentImageContainer}>
@@ -164,7 +164,7 @@ const CreateInstructionCard = ({formValues, saveCallback, deleteCard, cardKey}: 
           )
         }
         {
-          formValues.originalPhotos.original && (
+          formValues.originalPhotos.original?.base64 && (
             <Tooltip placement={'top'} title={'Нажмите, чтобы выделить различия'}
                      mouseEnterDelay={0.6}>
               <div className={imageCls.contentImageContainer}>

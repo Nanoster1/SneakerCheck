@@ -8,6 +8,9 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     mode: NODE_ENV,
+  stats: {
+    errorDetails: true
+  },
     entry: './src/index.tsx',
     output: {
         path: path.resolve(__dirname, '../WebApi/SneakerCheck.WebApi/wwwroot'),

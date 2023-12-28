@@ -10,6 +10,8 @@ import cx from '../ModelSearch/ModelSearch.module.scss'
 import { postInstruction } from '../../services/InstructionService'
 import { getSellerShop } from '../../services/ShopsService'
 import { useAppSelector } from '../../hooks/useTypedSelector'
+import { useNavigate } from 'react-router-dom'
+import { RouteNames } from '../../components/AppRouter'
 
 function emptyCard(): IInstructionCard {
   return { markerState: {}, editedPhotos: {}, imageDescription: '', originalPhotos: {} }
@@ -25,6 +27,7 @@ const categories = [
 const CreateInstruction = () => {
   const [form] = Form.useForm<string>()
   const {user} = useAppSelector(state => state.auth)
+  const navigate = useNavigate()
   const [instructionData, setInstructionData] = useState<IInstructionData>({
     category: 0,
     dislikes: 0,
@@ -62,9 +65,9 @@ const CreateInstruction = () => {
       shopId: myShop.data?.id ?? ''
     }
     console.log(request, 'SUBMIT')
-    const response = await postInstruction(request)
-    console.log({
-      response
+    postInstruction(request).then((r) => {
+      console.log({ response: r })
+      navigate(RouteNames.PROFILE)
     })
   }
 
